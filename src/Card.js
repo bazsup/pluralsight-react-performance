@@ -1,6 +1,15 @@
 import React from "react";
 
 export class Card extends React.Component {
+  shouldComponentUpdate(nextProps) {
+    const oldCard = this.props.card
+    const newCard = nextProps.card
+    if (oldCard.position.left === newCard.position.left && oldCard.position.top === newCard.position.top) {
+      return false
+    }
+    console.log(oldCard, newCard)
+    return true
+  }
   render() {
     const { card, onDragStart, onDragEnd, onDoubleClick } = this.props;
 

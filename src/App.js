@@ -62,16 +62,23 @@ function App() {
     setCards({ ...cards });
   }
 
-  const cardEls = Object.values(cards).map(card => (
+  const cardEls = Object.values(cards).map((card, index) => (
     <Card
       card={card}
       boardSize={boardSize}
-      key={card.id}
+      key={card.id + card.label}
       onDragStart={dragOffset => setDragCardInfo({ card, dragOffset })}
       onDragEnd={() => setDragCardInfo(null)}
       onDoubleClick={() => handleDelete(card)}
     />
   ));
+
+  const handlerAddOpen = React.useCallback(
+    () => {
+      setIsAddOpen(true)
+    },
+    []
+  )
 
   return (
     <div
@@ -84,17 +91,23 @@ function App() {
 
         const { card, dragOffset } = dragCardInfo;
 
-        card.position = {
-          top: ev.pageY - dragOffset.y,
-          left: ev.pageX - dragOffset.x
-        };
+        const updatedCards = {
+          ...cards,
+          [card.id]: {
+            ...card,
+            position: {
+              top: ev.pageY - dragOffset.y,
+              left: ev.pageX - dragOffset.x
+            }
+          }
+        }
 
-        setCards({ ...cards });
+        setCards(updatedCards);
       }}
     >
       {cardEls}
       <Summary cards={cards} />
-      <AddButton onClick={() => setIsAddOpen(true)} />
+      <AddButton onClick={handlerAddOpen} />
       {isAddOpen && (
         <AddModal
           isOpen={isAddOpen}
